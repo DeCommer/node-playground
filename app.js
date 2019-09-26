@@ -1,77 +1,104 @@
 const express = require('express');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const dns = require('dns');
+require('dotenv').config();
+const mongo = require('mongodb');
 const app = express();
-
-app.use(bodyParser.urlencoded({extended: false}))
 
 app.use('/', express.static(__dirname + '/public'));
 
+app.use(bodyParser.urlencoded({extended: false}));
+
+app.use(cors());
+
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+
+const port = process.env.PORT || 3000;
+
+const Schema = mongoose.Schema;
+
+const urlSchema = new Schema ({
+  id: Number,
+  url: String,
+});
+
+const urlModel = mongoose.model('Url', urlSchema)
+
+// What we need to survive
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/views/index.html');
+  res.sendFile(__dirname + '/views/index.html');
 })
 
-// app.get('/api', (req, res) => {
-//     res.send({"Message": "Hello, Joseph"})
-// })
+// Producing the food
+app.post("/api/shorturl/new", (req, res, next) => {
+  let original = req.body;
+  let urlData;
 
-// app.get('/', (req, res, next) => {
-//     console.log(req.method, req.path, req.ip)
-//     next()
-//   })
+  let urlreggie = /https:\/\/www.|http:\/\/www./g;
+  dns.lookup(req.body.url.replace(urlreggie, ''), (err) => {
+    if (err) {
+      res.json({error: err});
+    } else {
+      onComplete();
+    }
+  });
+  const onComplete = () => {
+    urlModel.find()
+      .exec()
+      .then(docs => {
+        urlData = docs;
+        let doc = new urlModel({ "id": urlData.length, "url": req.body.url });
+        urlData = urlData.filter((obj) => obj["url"] === req.body.url);
+        if (urlData.length === 0) {
+          doc.save()
+          .then(result => {
+            res.json(result);
+          })
+          .catch(err => {
+            res.json({"error": err});
+          });
+        } else {
+          res.json({"original url": urlData[0].url, "Short url": urlData[0].id});
+        }
+      })
+      .catch(err => {
+        res.json({"error": err});
+      })
+  }
+});
 
-// app.get('/now', (req, res, next) => {
-//     req.time = new Date().toString();
-//     next();
-// }, (req, res) => {
-//     res.send({"time": req.time})
-// }
-// )
-
-// app.get('/:word', (req, res, next) => {
-//     let word = req.params.word
-//     res.send({"Message": "Can be anything I want too?"})
-// })
-
-// app.get('/name', (req, res, next) => {
-//     var first = req.query.first;
-//     var last = req.query.last;
-//     var jsonObj = {'name': first + ' ' + last};
-//     res.json(jsonObj).post
-//   })
-
-// app.post('/name', (req, res, next) => {
-//     var first = req.body.first;
-//     var last = req.body.last;
-//     var jsonObj = {'name': first + ' ' + last};
-//     res.json(jsonObj)
-//   })
-
-// Get time based on browser input 
-// app.get("/api/timestamp/:date_string?", (req, res) => {
-//   var date_string = req.params.date_string
-  
-//   if(isNaN(date_string)) {
-//     var regDate = new Date(date_string).toUTCString()
-//     var uniDate = new Date(date_string).getTime();
-//   }
-  
-//   res.json({unix: uniDate, utc: regDate});
-// });
-
-
-// app.get('/', (req, res, next) => {
-
-//   let test = req.headers["content-language"];
-//   console.log(test);
-// })
-
-
-app.get("/api/whoami", function (req, res) {
-  var ip = req.ip;
-  var lan = req.headers["accept-language"]
-  var soft = req.headers['user-agent']
-  res.json({ipaddress: ip, language: lan, software: soft});
+// Retrieving the food
+app.get("/api/shorturl", (req, res, next) => {
+  urlModel.find()
+    .exec()
+    .then(docs => {
+      res.json(docs);
+    })
+    .catch(err => {
+      res.json({"error": err});
+    })
 })
 
+// Putting the food in the foodsack
+app.get("/api/shorturl/:shorturl", (req, res, next) => {
+  let shorturl = req.params.shorturl;
+  urlModel.find({"id": shorturl})
+  .exec()
+  .then(docs => {
+    res.redirect(docs[0]["url"]);
+  })
+  .catch(err => {
+    res.json({"error": err});
+  })
+});
 
-app.listen(3000)
+
+
+app.listen(port, () => {
+  console.log(`You're on port ${port}`);
+})

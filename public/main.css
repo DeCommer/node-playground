@@ -1,11 +1,33 @@
-h1 {
-    padding: 0;
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+
+body {
+    line-height: 1.2em;
+    font-family: 'Roboto', sans-serif;
+}
+
+h2 {
     font-size: 2em;
     color: dodgerblue; 
 }
 
+h3 {
+    color: tomato;
+    margin: 10px 0;
+}
+
+p {
+    margin: 2px 0 20px 0;
+}
+
 a {
+    text-decoration: none;
+    color: dodgerblue;
     margin: 0;
+}
+
+a:hover {
+    color: tomato;
+    transition: color, .3s ease-in-out;
 }
 
 ul{
@@ -14,18 +36,53 @@ ul{
     justify-content: center;
 }
 
+ol {
+    text-align: left;
+}
+
 li{
     margin: 10px;   
 }
 
+small {
+    color: rgb(82, 82, 82);
+    font-size: .7em;
+}
+
+.urlInput {
+    width: 25%;
+    padding: 5px;
+}
+
+.btn {
+    color: white;
+    background-color: dodgerblue;
+    border: none;
+    padding: 7px;
+}
+
+.btn:hover {
+    background-color: lightgreen;
+    color: darkgreen;
+    transition: background-color, .3s ease-in-out;
+}
+
+
 .container {
-    width: 500px;
+    width: 60%;
     height: auto;
     display: flex;
     margin: 0 auto;
     text-align: center;
     border-radius: 10px;
     flex-direction: column;
-    border: 1px solid lightblue;
+    border: 1px solid rgb(196, 196, 196);
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+}
 
+.storyContainer {
+    border: 1px solid rgb(218, 218, 218);
+    border-radius: 10px;
+    background-color: rgb(245, 245, 245);
+    margin: 0 20px;
 }
