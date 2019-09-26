@@ -47,17 +47,31 @@ app.get('/', (req, res) => {
 //   })
 
 // Get time based on browser input 
-app.get("/api/timestamp/:date_string?", (req, res) => {
-  var date_string = req.params.date_string
+// app.get("/api/timestamp/:date_string?", (req, res) => {
+//   var date_string = req.params.date_string
   
-  if(isNaN(date_string)) {
-    var regDate = new Date(date_string).toUTCString()
-    var uniDate = new Date(date_string).getTime();
-  }
+//   if(isNaN(date_string)) {
+//     var regDate = new Date(date_string).toUTCString()
+//     var uniDate = new Date(date_string).getTime();
+//   }
   
-  res.json({unix: uniDate, utc: regDate});
-});
+//   res.json({unix: uniDate, utc: regDate});
+// });
 
-var listener = app.listen(process.env.PORT, function () {
-  console.log('Your app is listening on port ' + listener.address().port);
-});
+
+// app.get('/', (req, res, next) => {
+
+//   let test = req.headers["content-language"];
+//   console.log(test);
+// })
+
+
+app.get("/api/whoami", function (req, res) {
+  var ip = req.ip;
+  var lan = req.headers["accept-language"]
+  var soft = req.headers['user-agent']
+  res.json({ipaddress: ip, language: lan, software: soft});
+})
+
+
+app.listen(3000)
