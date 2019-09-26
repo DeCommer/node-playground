@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/main.css">
+    <title>Basic NodeJS Server with Express</title>
+</head>
+<body>
+    <!-- <div class="container">
+        <h1>Server is running</h1>
+        <ul>
+            <li><a href="/api">api</a></li>
+            <li><a href="/now">Time</a></li>
+        </ul>
+
+        <form action="/name" method="post">
+            <label>First Name :</label>
+            <input type="text" name="first" value=""><br>
+            <label>Last Name :</label>
+            <input type="text" name="last" value=""><br><br>
+            <input type="submit" value="Submit">
+          </form> 
+    </div> -->
+
+    <div class="container">
+            <h3>Click submit to get a date object from input</h3>
+            <form action="/api/timestamp/:date_string?" method="get">
+              <label>Enter Date</label>
+              <input type="text" name="getStamp" placeholder="YYYY-MM-DD"><br><br>
+              <input class="btn" type="submit" value="Submit">
+            </form> 
+        </div>
+</body>
+</html>
