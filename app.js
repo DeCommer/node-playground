@@ -97,8 +97,6 @@ app.get("/api/shorturl/:shorturl", (req, res, next) => {
   })
 });
 
-
-
 app.listen(port, () => {
   console.log(`You're on port ${port}`);
 })
